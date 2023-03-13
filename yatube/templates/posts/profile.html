@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}       
+        <h1>{{ title }}</h1>
+        <h3>Всего постов:{{ all_posts }}</h3>   
+            <div class="container py-5">
+              {% for post in page_obj %}
+                {% include 'includes/post.html' %}
+              {% endfor %}
+            </div>
+        <!-- Остальные посты. после последнего нет черты -->
+        {% if not forloop.last %}<hr>
+        {% endif %}
+        <!-- Здесь подключён паджинатор -->
+        {% include 'posts/includes/paginator.html' %}
+    {% endblock %}
