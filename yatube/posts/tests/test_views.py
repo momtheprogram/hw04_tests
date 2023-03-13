@@ -39,19 +39,19 @@ class PostPagesTests(TestCase):
         templates_pages_names = {
             reverse('posts:index'): 'posts/index.html',
             reverse(
-                    'posts:group_list',
+                   'posts:group_list',
                     kwargs={'slug': PostPagesTests.group.slug}
             ): 'posts/group_list.html',
             reverse(
-                    'posts:profile',
+                   'posts:profile',
                     args={author_username}
             ): 'posts/profile.html',
             reverse(
-                    'posts:post_detail',
+                   'posts:post_detail',
                     args={post_id}
             ): 'posts/post_detail.html',
             reverse(
-                    'posts:post_edit',
+                   'posts:post_edit',
                     args={post_id}
             ): 'posts/create_post.html',
             reverse('posts:post_create'): 'posts/create_post.html',
@@ -221,10 +221,13 @@ class PostPagesTests(TestCase):
         )
         response = self.authorized_client.get(reverse('posts:group_list',
                                                       kwargs={
-            'slug': (PostPagesTests.
-                     group.
-                     slug)
-                     })
+                                                              'slug': (
+                                                                       PostPagesTests.
+                                                                       group.
+                                                                       slug
+                                                                       )
+                                                      }
+        )
         )
         group_context = response.context['page_obj'][0].group.title
         self.assertNotEqual(
