@@ -1,13 +1,8 @@
-import shutil
-import tempfile
-
-from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import Client, TestCase, override_settings
+from django.test import Client, TestCase
 from django.urls import reverse
 
-from posts.models import Post, Group
+from posts.models import Post
 
 User = get_user_model()
 
@@ -51,5 +46,13 @@ class FormTest(TestCase):
         self.authorized_client.post(reverse('posts:post_edit', args=[post.pk]),
                                     data=form_data, follow=True)
         post_after_changes = Post.objects.get(pk=post.pk)
-        self.assertEqual(post_after_changes.text, form_data['text'], 'Текст поста не изменился')
-        self.assertEqual(post_after_changes.pk, post.pk, 'Вместо изменения поста, создается новый пост')
+        self.assertEqual(
+            post_after_changes.text,
+            form_data['text'],
+            'Текст поста не изменился'
+            )
+        self.assertEqual(
+            post_after_changes.pk,
+            post.pk,
+            'Вместо изменения поста, создается новый пост'
+            )
