@@ -77,7 +77,7 @@ class PostURLTests(TestCase):
                     response,
                     template,
                     (f'По адресу {address} отображается неверный шаблон'
-                    f'  {template}')
+                     f' {template}')
                 )
                 self.assertEqual(response.status_code, 200)
 
