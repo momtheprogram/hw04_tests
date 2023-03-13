@@ -28,4 +28,4 @@ class PostModelTest(TestCase):
             post.__str__(),
             post.text,
             'Ошибка метода __str__() в модели Post'
-            )
+        )

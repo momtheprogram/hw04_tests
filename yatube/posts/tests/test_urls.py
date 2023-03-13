@@ -29,7 +29,7 @@ class PostURLTests(TestCase):
             f'/group/{group_slug}/': 'posts/group_list.html',
             f'/profile/{username}/': 'posts/profile.html',
             f'/posts/{post_id}/': 'posts/post_detail.html',
-            }
+        }
         cls.url_templates_status_for_authorized = {
             f'/posts/{post_id}/edit/': 'posts/create_post.html',
             '/create/': 'posts/create_post.html',
@@ -57,7 +57,7 @@ class PostURLTests(TestCase):
                     template,
                     (f'По адресу {address} отображается неверный шаблон'
                      f' {template}')
-                     )
+                )
                 self.assertEqual(
                     response.status_code, 200
                 )
@@ -76,8 +76,9 @@ class PostURLTests(TestCase):
                 self.assertTemplateUsed(
                     response,
                     template,
-                    f'По адресу {address} отображается неверный шаблон {template}'
-                    )
+                    (f'По адресу {address} отображается неверный шаблон'
+                    f'  {template}')
+                )
                 self.assertEqual(response.status_code, 200)
 
     def test_for_authorized_not_author(self):
@@ -94,7 +95,7 @@ class PostURLTests(TestCase):
             response,
             template,
             f'По адресу {address} отображается неверный шаблон {template}'
-            )
+        )
         self.assertEqual(response.status_code, 200)
 
     def test_404_unexpected_page(self):

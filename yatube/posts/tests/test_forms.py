@@ -34,7 +34,8 @@ class FormTest(TestCase):
 
     def test_change_post(self):
         """
-        Проверка изменения поста (происходит ли изменение поста с post_id в базе данных).
+        Проверка изменения поста (происходит ли изменение поста с post_id в
+        базе данных).
         """
         post = Post.objects.create(
             text='Текс поста для его изменения',
@@ -50,9 +51,9 @@ class FormTest(TestCase):
             post_after_changes.text,
             form_data['text'],
             'Текст поста не изменился'
-            )
+        )
         self.assertEqual(
             post_after_changes.pk,
             post.pk,
             'Вместо изменения поста, создается новый пост'
-            )
+        )

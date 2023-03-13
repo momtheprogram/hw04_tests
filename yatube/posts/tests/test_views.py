@@ -40,16 +40,19 @@ class PostPagesTests(TestCase):
             reverse('posts:index'): 'posts/index.html',
             reverse(
             'posts:group_list',
-            kwargs={'slug':PostPagesTests.group.slug}
+            kwargs={'slug': PostPagesTests.group.slug}
             ): 'posts/group_list.html',
             reverse(
-            'posts:profile', args={author_username}
+            'posts:profile',
+            args={author_username}
             ): 'posts/profile.html',
             reverse(
-            'posts:post_detail', args={post_id}
+            'posts:post_detail',
+            args={post_id}
             ): 'posts/post_detail.html',
             reverse(
-            'posts:post_edit', args={post_id}
+            'posts:post_edit',
+            args={post_id}
             ): 'posts/create_post.html',
             reverse('posts:post_create'): 'posts/create_post.html',
         }
@@ -61,7 +64,7 @@ class PostPagesTests(TestCase):
                     template,
                     (f'Для {reverse_name} используется некорректный шаблон'
                      f' {template}')
-                    )
+                )
 
     def test_chek_context_index(self):
         """Проверка шаблона index на формирование правильного контекста."""
@@ -76,7 +79,7 @@ class PostPagesTests(TestCase):
         response = (self.authorized_client.get(reverse(
             'posts:group_list',
             kwargs={'slug': PostPagesTests.group.slug})
-            ))
+        ))
         obj_post = response.context['page_obj'][0].group
         obj_group = response.context['group']
         self.assertEqual(
@@ -84,14 +87,14 @@ class PostPagesTests(TestCase):
             PostPagesTests.group.title,
             (f'Пост отсутствует на страничке "posts/group_list.html"'
              f' в группе {obj_group}'),
-            )
+        )
 
     def test_chek_context_profile(self):
         """ Проверка контекста profile. """
         another_post = Post.objects.create(
             text='Просто текст другого автора',
             author=PostPagesTests.author,
-            )
+        )
         url = reverse('posts:profile', args=(PostPagesTests.author.username,))
 
         response = self.authorized_client.get(url)
@@ -107,7 +110,7 @@ class PostPagesTests(TestCase):
             context_count,
             2,
             'В контексте profile некорректное число постов автора'
-            )
+        )
         self.assertEqual(context_author, PostPagesTests.author)
 
     def test_chek_context_post_detail(self):
@@ -117,7 +120,7 @@ class PostPagesTests(TestCase):
         response = self.authorized_client.get(reverse(
             'posts:post_detail',
             args=[post_id]
-            ))
+        ))
         context_post = response.context['post']
         context_count = response.context['post_count']
         self.assertEqual(context_post,
@@ -134,7 +137,7 @@ class PostPagesTests(TestCase):
         response = self.authorized_client.get(reverse(
             'posts:post_edit',
             args=[PostPagesTests.post.pk]
-            ))
+        ))
         context_form = response.context['form']
         context_is_edit = response.context['is_edit']
         context_post = response.context['post']
@@ -168,7 +171,7 @@ class PostPagesTests(TestCase):
             context_is_edit,
             False,
             'Неверное значение is_edit.'
-            )
+        )
 
     def test_check_post_in_pages_group(self):
         """
@@ -180,11 +183,11 @@ class PostPagesTests(TestCase):
         response2 = self.authorized_client.get(reverse(
             'posts:group_list',
             kwargs={'slug': PostPagesTests.group.slug}
-            ))
+        ))
         response3 = self.authorized_client.get(reverse(
             'posts:profile',
             args=(PostPagesTests.author.username,)
-            ))
+        ))
 
         context1 = response1.context['page_obj'][0]
         context2 = response2.context['page_obj'][0].group.title
@@ -194,17 +197,18 @@ class PostPagesTests(TestCase):
             context1,
             PostPagesTests.post,
             'На главной странице нет созданного с группой поста'
-            )
+        )
         self.assertEqual(
             context2,
             PostPagesTests.post.group.title,
             f'В группе {PostPagesTests.group.title} нет созданного поста'
-            )
+        )
         self.assertEqual(
             context3,
             PostPagesTests.post,
-            f'В профайле пользователя {PostPagesTests.author.username} нет созданного поста'
-            )
+            (f'В профайле пользователя {PostPagesTests.author.username}'
+             f' нет созданного поста')
+        )
 
     def test_post_not_in_an_outsider_group(self):
         """
@@ -216,7 +220,9 @@ class PostPagesTests(TestCase):
             description='simple_description'
         )
         response = self.authorized_client.get(reverse('posts:group_list',
-                                                      kwargs={'slug': PostPagesTests.group.slug}
+                                                      kwargs={'slug': (PostPagesTests.
+                                                                       group.
+                                                                       slug)}
                                                       ))
         group_context = response.context['page_obj'][0].group.title
         self.assertNotEqual(
@@ -244,7 +250,7 @@ class PaginatorViewsTest(TestCase):
                 author=PaginatorViewsTest.author,
                 group=PaginatorViewsTest.group,
             )
-    
+
     def setUp(self) -> None:
         self.author_client = Client()
         self.author_client.force_login(PaginatorViewsTest.author)
@@ -260,17 +266,17 @@ class PaginatorViewsTest(TestCase):
         response = self.author_client.get(reverse(
             'posts:group_list',
             kwargs={'slug': PaginatorViewsTest.group.slug},
-            ))
+        ))
         self.assertEqual(len(response.context['page_obj']), 10)
         response = self.author_client.get(reverse(
             'posts:profile',
             args=[PaginatorViewsTest.author.username],
-            ))
+        ))
         self.assertEqual(len(response.context['page_obj']), 10)
 
     def test_paginate_2(self):
         """
-        Проверка корректности работы паджинатора 
+        Проверка корректности работы паджинатора
         (количества постов на второй страничке).
         """
         response = self.author_client.get(reverse('posts:index') + '?page=2')
