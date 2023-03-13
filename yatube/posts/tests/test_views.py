@@ -39,13 +39,18 @@ class PostPagesTests(TestCase):
                 'author': {author_username},
                 'id': {post_id},
                 }
+        urls = {'group': 'posts/group_list.html',
+                'profile': 'posts/profile.html',
+                'detail': 'posts/post_detail.html',
+                'create': 'posts/create_post.html',
+                }
         templates_pages_names = {
             reverse('posts:index'): 'posts/index.html',
-            reverse('posts:group_list', kwargs=args['kwargs']):'posts/group_list.html',
-            reverse('posts:profile', args={author_username}): 'posts/profile.html',
-            reverse('posts:post_detail', args=args['id']): 'posts/post_detail.html',
-            reverse('posts:post_edit', args=args['id']): 'posts/create_post.html',
-            reverse('posts:post_create'): 'posts/create_post.html',
+            reverse('posts:group_list', kwargs=args['kwargs']): urls['group'],
+            reverse('posts:profile', args={author_username}): urls['profile'],
+            reverse('posts:post_detail', args=args['id']): urls['detail'],
+            reverse('posts:post_edit', args=args['id']): urls['create'],
+            reverse('posts:post_create'): urls['create'],
         }
         for reverse_name, template in templates_pages_names.items():
             with self.subTest(reverse_name=reverse_name):
@@ -211,7 +216,8 @@ class PostPagesTests(TestCase):
             description='simple_description'
         )
         kwargs = {'slug': PostPagesTests.group.slug}
-        response = self.authorized_client.get(reverse('posts:group_list', kwargs=kwargs))
+        url = 'posts:group_list'
+        response = self.authorized_client.get(reverse(url, kwargs=kwargs))
         group_context = response.context['page_obj'][0].group.title
         self.assertNotEqual(
             group_context,
