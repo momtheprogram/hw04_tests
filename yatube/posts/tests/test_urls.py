@@ -10,14 +10,14 @@ class PostURLTests(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.author = User.objects.create_user(username='test_username')
+        cls.author = User.objects.create_user(username='username')
         cls.group = Group.objects.create(
-            title='Test_title',
-            slug='test_slug',
-            description='test_description'
+            title='Заголовок',
+            slug='slug',
+            description='description'
         )
         cls.post = Post.objects.create(
-            text='Тестовый текст',
+            text='Текст',
             author=PostURLTests.author,
             group=PostURLTests.group)
 
@@ -42,60 +42,29 @@ class PostURLTests(TestCase):
         self.authorized_client.force_login(PostURLTests.author)
 
     def test_urls_uses_correct_template(self):
-        """
-        Проверяем, что URL-адрес использует соответствующий
-        шаблон (для всех пользователей).
-        """
-        for address, template in (PostURLTests.
-                                  url_templates_status_for_everybody.
-                                  items()
-                                  ):
+        items = PostURLTests.url_templates_status_for_everybody.items()
+        for address, template in (items):
             with self.subTest(address=address):
                 response = self.guest_client.get(address)
-                self.assertTemplateUsed(
-                    response,
-                    template,
-                    (f'По адресу {address} отображается неверный шаблон'
-                     f' {template}')
-                )
-                self.assertEqual(
-                    response.status_code, 200
-                )
+                self.assertTemplateUsed(response, template,)
+                self.assertEqual(response.status_code, 200,)
 
     def test_urls_correct_template_for_authorized(self):
-        """
-        Проверяем, что URL-адрес использует соответствующий
-        шаблон (для авторизованных пользователей).
-        """
-        for address, template in (PostURLTests.
-                                  url_templates_status_for_authorized.
-                                  items()
-                                  ):
+        items = PostURLTests.url_templates_status_for_authorized.items()
+        for address, template in (items):
             with self.subTest(address=address):
                 response = self.authorized_client.get(address)
-                self.assertTemplateUsed(
-                    response,
-                    template,
-                    (f'По адресу {address} отображается неверный шаблон'
-                     f' {template}')
-                )
+                self.assertTemplateUsed(response, template,)
                 self.assertEqual(response.status_code, 200)
 
     def test_for_authorized_not_author(self):
-        """
-        Проверка шаблона для авторизованного пользователя (не автора поста)
-        """
-        not_author = User.objects.create_user(username='test_authorized_user')
+        not_author = User.objects.create_user(username='authorized_user')
         not_author_authorized = Client()
         not_author_authorized.force_login(not_author)
         address = '/create/'
         template = 'posts/create_post.html'
         response = not_author_authorized.get(address)
-        self.assertTemplateUsed(
-            response,
-            template,
-            f'По адресу {address} отображается неверный шаблон {template}'
-        )
+        self.assertTemplateUsed(response, template,)
         self.assertEqual(response.status_code, 200)
 
     def test_404_unexpected_page(self):

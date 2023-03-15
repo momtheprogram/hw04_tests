@@ -11,9 +11,9 @@ class FormTest(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.author = User.objects.create_user(username='test-f')
+        cls.author = User.objects.create_user('author')
         cls.post = Post.objects.create(
-            text='Тестовый текст-f',
+            text='Текст',
             author=FormTest.author
         )
 
@@ -22,23 +22,13 @@ class FormTest(TestCase):
         self.authorized_client.force_login(FormTest.author)
 
     def test_create_post(self):
-        """
-        Проверка создания новой записи в базе данных при отправке валидной
-        формы со страницы создания поста reverse('posts:create_post').
-        """
-        form_data = {
-            'text': FormTest.post.text
-        }
+        form_data = {'text': FormTest.post.text}
         created_post = FormTest.post.text
-        self.assertEqual(created_post, form_data['text'], 'Пост не создается')
+        self.assertEqual(created_post, form_data['text'],)
 
     def test_change_post(self):
-        """
-        Проверка изменения поста (происходит ли изменение поста с post_id в
-        базе данных).
-        """
         post = Post.objects.create(
-            text='Текс поста для его изменения',
+            text='Текст поста для его изменения',
             author=FormTest.author
         )
         form_data = {
